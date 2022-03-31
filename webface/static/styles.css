@@ -5,6 +5,13 @@ body {
   margin-left: 90px;
   margin-right: 90px; }
 
+main {
+  clear: both;
+  margin-top:3em;
+}
+
+
+
 h1, h2, h3 {
   clear: both;
   margin-top: 3em;
@@ -13,6 +20,7 @@ h1, h2, h3 {
 h1 a {
   color: #bb8800; 
 }
+
 
 nav ul {
   margin: 1ex auto;
@@ -37,6 +45,10 @@ nav ul {
   nav img {
     float:left;
   }
+  
+.logo img {
+  margin-bottom: 2em;
+}
 
 footer {
   padding: 0.1ex 2em;
@@ -47,9 +59,13 @@ footer {
 .login {
   display: inline-block;
   float: right;
-  width: 30%;
+  margin-right: 30px;
+  width: 22%;
   border: orange solid 2px;
-  padding: 1ex; }
+  padding: 1ex; 
+  border-radius: 22px;
+  background-color: white;
+}
   
 .odd {
     background-color: orange;
@@ -59,5 +75,30 @@ footer {
     background-color: lightblue;
 }
 
+
+.messages {
+  font-size: 150%;
+  margin-top: 3em;
+  padding: 1ex;
+  background-color: white;
+}
+
+.error {
+  color: red;
+}
+.success {
+  color: green; 
+}
+
+.url {
+  text-align: center;
+  font-size: 150%;
+}
+.url input {
+  font-size: 110%;
+  border: #bb880080 solid 5px;
+  border-radius: 10px;
+  margin-top: 1ex;
+}
 
 /*# sourceMappingURL=styles.css.map */
