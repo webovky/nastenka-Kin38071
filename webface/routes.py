@@ -24,7 +24,11 @@ def prihlasit(function):
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("base.html.j2")
+    if "nick" in session:
+        return render_template("base.html.j2")
+    else:
+        flash("Pro vstup na nástěnku je potřeba je přihlásit","error")
+        return redirect(url_for("login"))
 
 
 
@@ -42,8 +46,14 @@ def login_post():
             tabulka = list(conn.execute("SELECT passwd FROM uzivatel WHERE nick=?", [nick]))
         if tabulka and check_password_hash(tabulka[0][0], passwd):
             flash("Ano", "success")
+            session["nick"] = nick
         else:
             flash("Ne", "error")
+    return redirect(url_for("index"))
+
+@app.route("/logout/")
+def logout():
+    session.pop("nick", None)
     return redirect(url_for("index"))
 
 
@@ -65,6 +75,7 @@ def add_post():
             try:
                 conn.execute('INSERT INTO uzivatel (nick, passwd) VALUES (?,?)', [nick, hashpasswd])
                 flash("Uživatel vytvořen.", "success")
+                session["nick"] = nick
             except sqlite3.IntegrityError:
                 flash("Uživatel již existuje", "error")
     else:
