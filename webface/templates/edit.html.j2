@@ -1,0 +1,14 @@
+{% extends 'base.html.j2' %}
+
+
+{% block obsah %}
+
+<h1>Edit</h1>
+<h2>Upravte text příspěvku</h2>
+<form action="{{ url_for('editovat') }}" method="post">
+    <textarea name="uprava" id="uprava" cols="70" rows="12">{{ text }}</textarea>
+    <button type="submit">Upravit příspěvek</button>
+</form>
+
+
+{% endblock obsah %}

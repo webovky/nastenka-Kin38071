@@ -62,9 +62,13 @@ Vložit příspěvek:
   <dd>
     {{ text }}
     {% if nick == session['nick'] %}
-    <form action="/delete/" method="post">
+    <form action="{{ url_for('delete') }}" method="post">
       <input type="hidden" name="id" id="id" value="{{ id }}">
       <button type="submit">Smazat</button>
+    </form>
+    <form action="{{ url_for('editpost') }}" method="post">
+      <input type="hidden" name="id" id="id" value="{{ id }}">
+      <button type="submit">Upravit</button>
     </form>
     {% endif %}
   </dd>

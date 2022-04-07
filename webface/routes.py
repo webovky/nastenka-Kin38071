@@ -105,3 +105,33 @@ def delete():
         return redirect(url_for('index'))
     else:
         return abort(403)
+
+@app.route('/editpost/', methods=["POST"])
+def editpost():
+    if 'nick' in session:
+        session.pop("zaznam", None)
+        idprisp=request.form.get('id')
+        name=session["nick"]
+        with sqlite3.connect(dbfile) as conn:
+            zaznam = list(conn.execute('SELECT id, text, nick FROM prispevek WHERE id=(?) AND nick=(?)', [idprisp, name]))
+        session["zaznam"]=zaznam
+        return redirect(url_for('edit'))
+    else:
+        return abort(403)
+
+@app.route('/edit/')
+def edit():
+    zaznam=session["zaznam"]
+    text=zaznam[0][1]
+    print(zaznam)
+    return render_template("edit.html.j2", text=text)
+
+@app.route('/editovat/', methods=["POST"])
+def editovat():
+    zaznam=session["zaznam"]
+    name=session["nick"]
+    upraveny=request.form.get('uprava')
+    id=zaznam[0][0]
+    with sqlite3.connect(dbfile) as conn:
+        conn.execute('UPDATE prispevek SET text=(?) WHERE id=(?) AND nick=(?)', [upraveny, id, name])
+    return redirect(url_for('index'))
