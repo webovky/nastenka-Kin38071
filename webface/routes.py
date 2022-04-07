@@ -2,7 +2,7 @@ from . import app
 from flask import render_template, request, redirect, url_for, session, flash
 import functools
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from datetime import datetime
 import sqlite3
 
 dbfile= 'databaze.sqlite'
@@ -26,7 +26,7 @@ def prihlasit(function):
 def index():
     if "nick" in session:
         with sqlite3.connect(dbfile) as conn:
-            tabulka = conn.execute('SELECT nick, text, id FROM prispevek')
+            tabulka = conn.execute('SELECT nick, text, id, date FROM prispevek')
         return render_template("base.html.j2", tabulka=tabulka)
     else:
         flash("Pro vstup na nástěnku je potřeba je přihlásit","error")
@@ -88,9 +88,11 @@ def add_post():
 @app.route('/insert/', methods=["POST"])
 def insert():
     if 'nick' in session:
+        now = datetime.now()
+        date = now.strftime("%d/%m/%Y %H:%M:%S")
         prispevek = request.form.get('prispevek')
         with sqlite3.connect(dbfile) as conn:
-            conn.execute('INSERT INTO prispevek (text, nick) VALUES (?,?)', [prispevek, session['nick']])
+            conn.execute('INSERT INTO prispevek (text, date, nick) VALUES (?,?,?)', [prispevek, date, session['nick']])
         return redirect(url_for('index'))
     else:
         return abort(403)
@@ -128,10 +130,13 @@ def edit():
 
 @app.route('/editovat/', methods=["POST"])
 def editovat():
-    zaznam=session["zaznam"]
-    name=session["nick"]
-    upraveny=request.form.get('uprava')
-    id=zaznam[0][0]
-    with sqlite3.connect(dbfile) as conn:
-        conn.execute('UPDATE prispevek SET text=(?) WHERE id=(?) AND nick=(?)', [upraveny, id, name])
+    if 'nick' in session:
+        now = datetime.now()
+        datum = now.strftime("%d/%m/%Y %H:%M:%S") + " (upraveno)"
+        zaznam=session["zaznam"]
+        name=session["nick"]
+        upraveny=request.form.get('uprava')
+        id=zaznam[0][0]
+        with sqlite3.connect(dbfile) as conn:
+            conn.execute('UPDATE prispevek SET text=(?), date=(?) WHERE id=(?) AND nick=(?)', [upraveny, datum, id, name])
     return redirect(url_for('index'))

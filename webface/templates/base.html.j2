@@ -57,8 +57,9 @@ Vložit příspěvek:
 
 
 <dl>
-{% for nick, text , id in tabulka %}
-  <dt>{{ nick }}</dt>
+{% for nick, text , id, date in tabulka %}
+  <dt>{{ nick }} <br> {{ date }} </dt>
+  <br>
   <dd>
     {{ text }}
     {% if nick == session['nick'] %}
@@ -72,6 +73,7 @@ Vložit příspěvek:
     </form>
     {% endif %}
   </dd>
+  <br>
   <br>
 {% endfor %}
 </dl>
