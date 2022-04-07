@@ -94,3 +94,14 @@ def insert():
         return redirect(url_for('index'))
     else:
         return abort(403)
+
+@app.route('/delete/', methods=["POST"])
+def delete():
+    if 'nick' in session:
+        idprisp=request.form.get('id')
+        name=session["nick"]
+        with sqlite3.connect(dbfile) as conn:
+            conn.execute('DELETE FROM prispevek WHERE id=(?) AND nick=(?)', [idprisp, name])
+        return redirect(url_for('index'))
+    else:
+        return abort(403)
