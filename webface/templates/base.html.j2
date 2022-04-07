@@ -46,6 +46,32 @@
 <br>
 <br>
 <h1>Nástěnka</h1>
+
+Vložit příspěvek:
+<form action="{{ url_for('insert') }}" method="post">
+  <textarea name="prispevek" id="prispevek" cols="70" rows="12">Sem vlož příspěvek</textarea>
+  <button type="submit">Odeslat příspěvek</button>
+</form>
+
+<h2>Vloženo</h2>
+
+
+<dl>
+{% for nick, text , id in tabulka %}
+  <dt>{{ nick }}</dt>
+  <dd>
+    {{ text }}
+    {% if nick == session['nick'] %}
+    <form action="/delete/" method="post">
+      <input type="hidden" name="id" id="id" value="{{ id }}">
+      <button type="submit">Smazat</button>
+    </form>
+    {% endif %}
+  </dd>
+  <br>
+{% endfor %}
+</dl>
+
 <br>
 <br>
 {% endblock obsah %}

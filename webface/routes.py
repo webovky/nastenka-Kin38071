@@ -25,7 +25,9 @@ def prihlasit(function):
 @app.route("/", methods=["GET"])
 def index():
     if "nick" in session:
-        return render_template("base.html.j2")
+        with sqlite3.connect(dbfile) as conn:
+            tabulka = conn.execute('SELECT nick, text, id FROM prispevek')
+        return render_template("base.html.j2", tabulka=tabulka)
     else:
         flash("Pro vstup na nástěnku je potřeba je přihlásit","error")
         return redirect(url_for("login"))
@@ -45,10 +47,10 @@ def login_post():
         with sqlite3.connect(dbfile) as conn:
             tabulka = list(conn.execute("SELECT passwd FROM uzivatel WHERE nick=?", [nick]))
         if tabulka and check_password_hash(tabulka[0][0], passwd):
-            flash("Ano", "success")
+            flash("Úspěšné přihlášení", "success")
             session["nick"] = nick
         else:
-            flash("Ne", "error")
+            flash("Špatné údaje", "error")
     return redirect(url_for("index"))
 
 @app.route("/logout/")
@@ -82,3 +84,13 @@ def add_post():
         flash("Chyba: je nutné zadat jméno a dvakrát stejné heslo", "error")
         return redirect(url_for("add"))
     return redirect(url_for("index"))
+
+@app.route('/insert/', methods=["POST"])
+def insert():
+    if 'nick' in session:
+        prispevek = request.form.get('prispevek')
+        with sqlite3.connect(dbfile) as conn:
+            conn.execute('INSERT INTO prispevek (text, nick) VALUES (?,?)', [prispevek, session['nick']])
+        return redirect(url_for('index'))
+    else:
+        return abort(403)
