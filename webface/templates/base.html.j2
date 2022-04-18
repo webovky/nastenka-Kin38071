@@ -15,33 +15,71 @@
 </head>
 
 <body>
-<a href="https://github.com/spseol/startflask/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
 
+  <div class="login">
+    {% if 'nick' in session %}
+      <p>Nick: <strong>{{ session.nick }}</strong>. <a href="{{url_for('logout')}}">LogOut</a></p>
+    {% else %}
+      <p><a href="{{url_for('login')}}">LogIn</a></p>
+    {% endif %}
+  </div>
 
   <nav>
-  <p><img src="{{ url_for('static', filename='flask-icon.png') }}" /></p>
+  <p class="logo"><img src="{{ url_for('static', filename='flask-icon.png') }}" /></p>
   <ul>
-    <li><a href="{{ url_for('index') }}">Index</a></li>
-    <li><a href="{{ url_for('info') }}">Info</a></li>
-    <li><a href="{{ url_for('abc') }}">ABC</a></li>
+    <li><a href="{{ url_for('index') }}">Nástěnka</a></li>
+    <li><a href="{{ url_for('add') }}">Nový uživatel</a></li>
+    <li><a href="{{ url_for('login') }}">LogIn</a></li>
   </ul></nav>
 
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  <div class="messages">
+    {% for category, message in messages %}
+      <p class="{{category}}">{{ message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith%}
 
 {% block obsah %}
+<br>
+<br>
+<h1>Nástěnka</h1>
 
-{#{% filter markdown %}#}
+Vložit příspěvek:
+<form action="{{ url_for('insert') }}" method="post">
+  <textarea name="prispevek" id="prispevek" cols="70" rows="12">Sem vlož příspěvek</textarea>
+  <button type="submit">Odeslat příspěvek</button>
+</form>
 
-# Flask
-
-Startovací šablona pro webový framework Flask.
-
-![Flaštička]({{ url_for('static', filename='flask.png') }})
-![Flaštičky]({{ url_for('static', filename='flasks.png') }})
-
-{#{% endfilter %}#}
+<h2>Vloženo</h2>
 
 
+<dl>
+{% for nick, text , id, date in tabulka %}
+  <dt>{{ nick }} <br> {{ date }} </dt>
+  <br>
+  <dd>
+    {{ text }}
+    {% if nick == session['nick'] %}
+    <form action="{{ url_for('delete') }}" method="post">
+      <input type="hidden" name="id" id="id" value="{{ id }}">
+      <button type="submit">Smazat</button>
+    </form>
+    <form action="{{ url_for('editpost') }}" method="post">
+      <input type="hidden" name="id" id="id" value="{{ id }}">
+      <button type="submit">Upravit</button>
+    </form>
+    {% endif %}
+  </dd>
+  <br>
+  <br>
+{% endfor %}
+</dl>
 
+<br>
+<br>
 {% endblock obsah %}
 
 <footer>

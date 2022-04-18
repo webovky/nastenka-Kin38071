@@ -1,0 +1,28 @@
+{% extends 'base.html.j2' %}
+
+
+{% block obsah %}
+
+<h1>LogIn</h1>
+
+<form method="post">
+
+<table>
+    <tr>
+        <td style="text-align:right;">Nick:</td>
+        <td><input type="text" name="nick"></dt>
+    </tr>
+    <tr>
+        <td style="text-align:right;">Heslo:</td>
+        <td><input type="password" name="passwd"></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><button>Přihlást</button></td>
+    </tr>
+
+</table>
+
+
+
+{% endblock obsah %}
